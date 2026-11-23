@@ -1,0 +1,256 @@
+{
+  "name": "Producción de papel · Taller IAD",
+  "description": "Tres máquinas producen cuatro tipos de papel. Determina cuántas toneladas de cada tipo producir en cada máquina para minimizar el costo y maximizar la calidad total. Cumple la demanda mínima y las horas disponibles. Datos base del Taller 1; para la variante del Taller 3, ajusta la demanda de Prensa y las preferencias según el enunciado.",
+  "reference": "IAD · Taller de formulación de problemas multiobjetivo, «Programación de producción de papel». Variante en Taller 3 de Métodos Continuos.",
+  "variables": [
+    {
+      "name": "x1_1 (M1 Prensa)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x1_2 (M1 Folio)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x1_3 (M1 Imprenta)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x1_4 (M1 Reciclado)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x2_1 (M2 Prensa)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x2_2 (M2 Folio)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x2_3 (M2 Imprenta)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x2_4 (M2 Reciclado)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x3_1 (M3 Prensa)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x3_2 (M3 Folio)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x3_3 (M3 Imprenta)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    },
+    {
+      "name": "x3_4 (M3 Reciclado)",
+      "var_type": "continuous",
+      "lower_bound": 0,
+      "upper_bound": null
+    }
+  ],
+  "objectives": [
+    {
+      "name": "Costo (millones de pesos)",
+      "sense": "minimize",
+      "coefficients": [
+        76,
+        82,
+        96,
+        72,
+        75,
+        70,
+        95,
+        71,
+        73,
+        78,
+        92,
+        70
+      ]
+    },
+    {
+      "name": "Calidad (indicador × ton)",
+      "sense": "maximize",
+      "coefficients": [
+        45,
+        76,
+        39,
+        45,
+        42,
+        64,
+        41,
+        42,
+        38,
+        70,
+        36,
+        38
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "name": "Horas disponibles · Máquina 1",
+      "sense": "<=",
+      "rhs": 5,
+      "coefficients": [
+        0.018867924528301886,
+        0.0196078431372549,
+        0.019230769230769232,
+        0.023809523809523808,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Horas disponibles · Máquina 2",
+      "sense": "<=",
+      "rhs": 3,
+      "coefficients": [
+        0,
+        0,
+        0,
+        0,
+        0.019230769230769232,
+        0.02040816326530612,
+        0.022222222222222223,
+        0.022727272727272728,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Horas disponibles · Máquina 3",
+      "sense": "<=",
+      "rhs": 3,
+      "coefficients": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.02040816326530612,
+        0.022727272727272728,
+        0.02127659574468085,
+        0.025
+      ]
+    },
+    {
+      "name": "Demanda mínima · Prensa",
+      "sense": ">=",
+      "rhs": 77,
+      "coefficients": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Demanda mínima · Folio",
+      "sense": ">=",
+      "rhs": 81,
+      "coefficients": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Demanda mínima · Imprenta",
+      "sense": ">=",
+      "rhs": 99,
+      "coefficients": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "name": "Demanda mínima · Reciclado",
+      "sense": ">=",
+      "rhs": 105,
+      "coefficients": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "weights": [
+    0.5,
+    0.5
+  ]
+}

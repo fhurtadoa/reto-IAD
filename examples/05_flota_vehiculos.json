@@ -1,0 +1,25 @@
+{
+  "name": "Adquisición de Flota de Vehículos Eléctricos (Caso Taller IAD)",
+  "description": "Formulación continua adaptada para dimensionamiento de flota de 50 vehículos entre 6 alternativas 100% eléctricas (inspirada en el caso discreto de vehículos del curso IAD): BYD Seal, Tesla Model 3, Hyundai Ioniq 5, Kia EV6, Volvo EX30 y Chevrolet Equinox EV.",
+  "reference": "Adaptación continua del taller de selección de vehículos del curso IAD (6 alternativas, 4 objetivos) — Facultad de Minas, UNAL.",
+  "variables": [
+    {"name": "x1 (BYD Seal)", "var_type": "continuous", "lower_bound": 0.0, "upper_bound": 50.0},
+    {"name": "x2 (Tesla Model 3)", "var_type": "continuous", "lower_bound": 0.0, "upper_bound": 50.0},
+    {"name": "x3 (Hyundai Ioniq 5)", "var_type": "continuous", "lower_bound": 0.0, "upper_bound": 50.0},
+    {"name": "x4 (Kia EV6)", "var_type": "continuous", "lower_bound": 0.0, "upper_bound": 50.0},
+    {"name": "x5 (Volvo EX30)", "var_type": "continuous", "lower_bound": 0.0, "upper_bound": 50.0},
+    {"name": "x6 (Chevrolet Equinox EV)", "var_type": "continuous", "lower_bound": 0.0, "upper_bound": 50.0}
+  ],
+  "objectives": [
+    {"name": "Costo Total Flota (USD)", "sense": "minimize", "coefficients": [44000.0, 46500.0, 49000.0, 48000.0, 42000.0, 43500.0]},
+    {"name": "Autonomía Total (km)", "sense": "maximize", "coefficients": [570.0, 630.0, 520.0, 540.0, 480.0, 510.0]},
+    {"name": "Tiempo acumulado de carga (min)", "sense": "minimize", "coefficients": [32.0, 27.0, 18.0, 18.0, 26.0, 30.0]},
+    {"name": "Índice Seguridad Flota (pts)", "sense": "maximize", "coefficients": [9.0, 9.5, 9.6, 9.7, 10.0, 9.3]}
+  ],
+  "constraints": [
+    {"name": "Tamaño Requerido de Flota", "coefficients": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "sense": "==", "rhs": 50.0},
+    {"name": "Capacidad Mínima Maletero (L)", "coefficients": [400.0, 594.0, 527.0, 520.0, 318.0, 748.0], "sense": ">=", "rhs": 24000.0},
+    {"name": "Presupuesto Máximo Inversión (USD)", "coefficients": [44000.0, 46500.0, 49000.0, 48000.0, 42000.0, 43500.0], "sense": "<=", "rhs": 2350000.0}
+  ],
+  "weights": [0.3, 0.25, 0.25, 0.2]
+}

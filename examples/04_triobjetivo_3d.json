@@ -1,0 +1,21 @@
+{
+  "name": "Optimización Sostenible Triobjetivo 3D (Bonus)",
+  "description": "Problema con 3 dimensiones de impacto: maximizar retorno económico, minimizar impacto ambiental y maximizar beneficio social.",
+  "reference": "Caso demostrativo de bonificación Triobjetivo 3D (retorno, ambiente y beneficio social) — Opción 4, Concurso IAD UNAL.",
+  "variables": [
+    {"name": "x1 (Línea Rentable)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x2 (Línea Social)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x3 (Línea Intensiva)", "var_type": "continuous", "lower_bound": 0.0}
+  ],
+  "objectives": [
+    {"name": "Retorno Económico (kUSD)", "sense": "maximize", "coefficients": [3.0, 1.0, 2.0]},
+    {"name": "Impacto Ambiental (CO2 eq)", "sense": "minimize", "coefficients": [2.0, 1.0, 4.0]},
+    {"name": "Beneficio Social (Puntos)", "sense": "maximize", "coefficients": [1.0, 3.0, 1.0]}
+  ],
+  "constraints": [
+    {"name": "Presupuesto de Capital", "coefficients": [1.0, 1.0, 1.0], "sense": "<=", "rhs": 100.0},
+    {"name": "Capacidad Técnica Operativa A", "coefficients": [2.0, 1.0, 0.0], "sense": "<=", "rhs": 120.0},
+    {"name": "Capacidad Técnica Operativa B", "coefficients": [0.0, 1.0, 2.0], "sense": "<=", "rhs": 140.0}
+  ],
+  "weights": [0.3333, 0.3333, 0.3334]
+}
