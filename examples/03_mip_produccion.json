@@ -1,0 +1,20 @@
+{
+  "name": "Planificación Entera y Binaria (MIP Bonus)",
+  "description": "Optimización de rendimiento vs costo operativo con variables continuas (lotes), enteras (máquinas) y binaria (apertura de planta).",
+  "reference": "Caso demostrativo de bonificación MIP (variables continuas, enteras y binarias) — Opción 4, Concurso IAD UNAL.",
+  "variables": [
+    {"name": "x1", "var_type": "continuous", "lower_bound": 0.0, "upper_bound": 50.0},
+    {"name": "x2", "var_type": "integer", "lower_bound": 0.0, "upper_bound": 20.0},
+    {"name": "y1", "var_type": "binary", "lower_bound": 0.0, "upper_bound": 1.0}
+  ],
+  "objectives": [
+    {"name": "Rendimiento (USD)", "sense": "maximize", "coefficients": [40.0, 70.0, 150.0]},
+    {"name": "Costo Operativo (USD)", "sense": "minimize", "coefficients": [10.0, 25.0, 80.0]}
+  ],
+  "constraints": [
+    {"name": "Capacidad Planta", "coefficients": [1.0, 2.0, -30.0], "sense": "<=", "rhs": 0.0},
+    {"name": "Presupuesto Global", "coefficients": [10.0, 25.0, 80.0], "sense": "<=", "rhs": 500.0},
+    {"name": "Demanda Mínima", "coefficients": [1.0, 1.0, 0.0], "sense": ">=", "rhs": 15.0}
+  ],
+  "weights": [0.6, 0.4]
+}

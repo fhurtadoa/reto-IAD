@@ -1,0 +1,41 @@
+{
+  "name": "Problema de Transporte Multiobjetivo (Taller 3)",
+  "description": "Distribución desde 3 orígenes (O1, O2, O3) hacia 4 destinos (D1, D2, D3, D4), minimizando costo total de flete y minimizando riesgo en rutas.",
+  "reference": "IAD · Taller 2 y Taller 3 (Métodos Continuos), Problema de Transporte Multiobjetivo 3×4 — Facultad de Minas, UNAL.",
+  "variables": [
+    {"name": "x_1_1 (O1 → D1)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_1_2 (O1 → D2)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_1_3 (O1 → D3)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_1_4 (O1 → D4)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_2_1 (O2 → D1)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_2_2 (O2 → D2)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_2_3 (O2 → D3)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_2_4 (O2 → D4)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_3_1 (O3 → D1)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_3_2 (O3 → D2)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_3_3 (O3 → D3)", "var_type": "continuous", "lower_bound": 0.0},
+    {"name": "x_3_4 (O3 → D4)", "var_type": "continuous", "lower_bound": 0.0}
+  ],
+  "objectives": [
+    {
+      "name": "Costo de Transporte (COP)",
+      "sense": "minimize",
+      "coefficients": [4.0, 3.0, 3.0, 4.0, 5.0, 2.0, 1.0, 5.0, 7.0, 10.0, 8.0, 9.0]
+    },
+    {
+      "name": "Riesgo Global de Transporte",
+      "sense": "minimize",
+      "coefficients": [6.0, 0.0, 1.0, 5.0, 2.0, 4.0, 0.0, 2.0, 3.0, 1.0, 2.0, 1.0]
+    }
+  ],
+  "constraints": [
+    {"name": "Oferta Origen O1", "coefficients": [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "sense": "<=", "rhs": 800.0},
+    {"name": "Oferta Origen O2", "coefficients": [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0], "sense": "<=", "rhs": 1200.0},
+    {"name": "Oferta Origen O3", "coefficients": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0], "sense": "<=", "rhs": 1500.0},
+    {"name": "Demanda Destino D1", "coefficients": [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0], "sense": ">=", "rhs": 500.0},
+    {"name": "Demanda Destino D2", "coefficients": [0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0], "sense": ">=", "rhs": 700.0},
+    {"name": "Demanda Destino D3", "coefficients": [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0], "sense": ">=", "rhs": 900.0},
+    {"name": "Demanda Destino D4", "coefficients": [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0], "sense": ">=", "rhs": 1400.0}
+  ],
+  "weights": [0.5, 0.5]
+}

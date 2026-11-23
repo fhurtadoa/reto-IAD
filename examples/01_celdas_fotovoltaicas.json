@@ -1,0 +1,18 @@
+{
+  "name": "Planificación de Celdas Fotovoltaicas (Clase 15)",
+  "description": "Problema biobjetivo del curso: maximizar utilidad económica vs minimizar generación de contaminantes.",
+  "reference": "IAD · Clase 11 y Clase 15 (Programación de Compromiso), caso Celdas Fotovoltaicas — Prof. Patricia Jaramillo Álvarez, UNAL.",
+  "variables": [
+    {"name": "x1 (Celdas Fotov.)", "var_type": "continuous", "lower_bound": 0.0, "upper_bound": 300.0},
+    {"name": "x2 (Celdas GP)", "var_type": "continuous", "lower_bound": 0.0, "upper_bound": 200.0}
+  ],
+  "objectives": [
+    {"name": "Utilidad Total (USD)", "sense": "maximize", "coefficients": [1000.0, 3000.0]},
+    {"name": "Emisión Contaminantes (kg)", "sense": "minimize", "coefficients": [1.0, 2.0]}
+  ],
+  "constraints": [
+    {"name": "Capacidad Máxima de Ensamble", "coefficients": [1.0, 1.0], "sense": "<=", "rhs": 400.0},
+    {"name": "Demanda Mínima de Ingreso", "coefficients": [1000.0, 3000.0], "sense": ">=", "rhs": 300000.0}
+  ],
+  "weights": [0.5, 0.5]
+}
