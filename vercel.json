@@ -1,0 +1,22 @@
+{
+  "git": {
+    "deploymentEnabled": {
+      "audit/opticompromise-iad": false
+    }
+  },
+  "buildCommand": "cd web && npm run build",
+  "outputDirectory": "web/.next",
+  "framework": "nextjs",
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{examples/**,api/fonts/**}",
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    }
+  ]
+}
