@@ -1,0 +1,455 @@
+{
+  "payload": {
+    "name": "GAMS EPSCM Energia",
+    "description": "Modelo editable desde cero para formular variables, objetivos y restricciones.",
+    "variables": [
+      {
+        "name": "lb",
+        "var_type": "continuous",
+        "lower_bound": 0,
+        "upper_bound": null
+      },
+      {
+        "name": "lm",
+        "var_type": "continuous",
+        "lower_bound": 0,
+        "upper_bound": null
+      },
+      {
+        "name": "om",
+        "var_type": "continuous",
+        "lower_bound": 0,
+        "upper_bound": null
+      },
+      {
+        "name": "op",
+        "var_type": "continuous",
+        "lower_bound": 0,
+        "upper_bound": null
+      },
+      {
+        "name": "gb",
+        "var_type": "continuous",
+        "lower_bound": 0,
+        "upper_bound": null
+      },
+      {
+        "name": "gm",
+        "var_type": "continuous",
+        "lower_bound": 0,
+        "upper_bound": null
+      },
+      {
+        "name": "gp",
+        "var_type": "continuous",
+        "lower_bound": 0,
+        "upper_bound": null
+      },
+      {
+        "name": "rb",
+        "var_type": "continuous",
+        "lower_bound": 0,
+        "upper_bound": null
+      },
+      {
+        "name": "rp",
+        "var_type": "continuous",
+        "lower_bound": 0,
+        "upper_bound": null
+      }
+    ],
+    "objectives": [
+      {
+        "name": "Costo",
+        "sense": "minimize",
+        "coefficients": [
+          30,
+          30,
+          75,
+          75,
+          60,
+          60,
+          60,
+          90,
+          90
+        ]
+      },
+      {
+        "name": "CO2",
+        "sense": "minimize",
+        "coefficients": [
+          1.44,
+          1.44,
+          0.72,
+          0.72,
+          0.45,
+          0.45,
+          0.45,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Endogena",
+        "sense": "maximize",
+        "coefficients": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ]
+      }
+    ],
+    "constraints": [
+      {
+        "name": "Restricción 1",
+        "sense": "<=",
+        "rhs": 31000,
+        "coefficients": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Restricción 2",
+        "sense": "<=",
+        "rhs": 15000,
+        "coefficients": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Restricción 3",
+        "sense": "<=",
+        "rhs": 22000,
+        "coefficients": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Restricción 4",
+        "sense": "<=",
+        "rhs": 10000,
+        "coefficients": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "Restricción 5",
+        "sense": ">=",
+        "rhs": 38400,
+        "coefficients": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0
+        ]
+      },
+      {
+        "name": "Restricción 6",
+        "sense": ">=",
+        "rhs": 19200,
+        "coefficients": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Restricción 7",
+        "sense": ">=",
+        "rhs": 6400,
+        "coefficients": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "name": "Restricción 8",
+        "sense": "<=",
+        "rhs": 53820,
+        "coefficients": [
+          1.44,
+          1.44,
+          0.72,
+          0.72,
+          0.45,
+          0.45,
+          0.45,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Restricción 9",
+        "sense": ">=",
+        "rhs": 39000,
+        "coefficients": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ]
+      }
+    ],
+    "weights": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ]
+  },
+  "result": {
+    "status": "partial",
+    "message": "Optimalidad sin confirmar para L2, L∞.",
+    "payoff": {
+      "headers": [
+        "Costo",
+        "CO2",
+        "Endogena"
+      ],
+      "matrix": [
+        [
+          3315000,
+          53819.999999999985,
+          38999.99999999999
+        ],
+        [
+          3315000,
+          53820,
+          39000
+        ],
+        [
+          3315000,
+          53820,
+          39000
+        ]
+      ],
+      "ideal_point": [
+        3315000,
+        53819.999999999985,
+        39000
+      ],
+      "anti_ideal_point": [
+        3315000,
+        53820,
+        38999.99999999999
+      ],
+      "independent_solutions": [
+        {
+          "lb": 12799.999999999985,
+          "lm": 16200.000000000005,
+          "om": 2999.999999999995,
+          "op": 0,
+          "gb": 22000.000000000007,
+          "gm": 0,
+          "gp": 0,
+          "rb": 3600,
+          "rp": 6400.000000000002
+        },
+        {
+          "lb": 28400,
+          "lm": 600,
+          "om": 0,
+          "op": 3000,
+          "gb": 0,
+          "gm": 18600,
+          "gp": 3400,
+          "rb": 10000,
+          "rp": 0
+        },
+        {
+          "lb": 29000,
+          "lm": 0,
+          "om": 0,
+          "op": 3000,
+          "gb": 0,
+          "gm": 19200,
+          "gp": 2800,
+          "rb": 9400,
+          "rp": 600
+        }
+      ],
+      "normalization_ranges": [
+        1,
+        1.4551915228366852e-11,
+        7.275957614183426e-12
+      ],
+      "normalization_sources": [
+        "constant",
+        "payoff",
+        "payoff"
+      ],
+      "decision_ranges_2d": null,
+      "degenerate_objectives": [
+        0
+      ],
+      "status": "optimal"
+    },
+    "solutions": {
+      "L1": {
+        "metric": "L1",
+        "variables": {
+          "lb": 28400,
+          "lm": 600,
+          "om": 0,
+          "op": 3000,
+          "gb": 0,
+          "gm": 18600,
+          "gp": 3400,
+          "rb": 10000,
+          "rp": 0
+        },
+        "objectives": [
+          3315000,
+          53820,
+          39000
+        ],
+        "achievement_pct": [
+          100,
+          0,
+          100
+        ],
+        "normalized_distances": [
+          0,
+          1,
+          0
+        ],
+        "aggregate_distance": 0.3333333333333333,
+        "status": "optimal"
+      },
+      "L2": {
+        "metric": "L2",
+        "variables": {
+          "lb": 28400,
+          "lm": 600,
+          "om": 0,
+          "op": 3000,
+          "gb": 0,
+          "gm": 18600,
+          "gp": 3400,
+          "rb": 10000,
+          "rp": 0
+        },
+        "objectives": [
+          3315000,
+          53820,
+          39000
+        ],
+        "achievement_pct": [
+          100,
+          0,
+          100
+        ],
+        "normalized_distances": [
+          0,
+          1,
+          0
+        ],
+        "aggregate_distance": 0.3333333333333333,
+        "status": "feasible_suboptimal"
+      },
+      "L_inf": {
+        "metric": "L_inf",
+        "variables": {},
+        "objectives": [],
+        "achievement_pct": [],
+        "normalized_distances": [],
+        "aggregate_distance": 0,
+        "status": "error: (HiGHS Status 2: Model error)"
+      }
+    },
+    "weights": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "pareto_points": [
+      {
+        "weights": [
+          0.4,
+          0.6,
+          0
+        ],
+        "objectives": [
+          3314999.997734274,
+          53819.99999999997,
+          39000.00001427399
+        ],
+        "variables": {
+          "lb": 23399.42516711029,
+          "lm": 5600.5748471637,
+          "om": 1000.038706480909,
+          "op": 1999.961291297057,
+          "gb": 7333.939185225728,
+          "gm": 12599.386823074727,
+          "gp": 2066.6739495779816,
+          "rb": 7666.635261357921,
+          "rp": 2333.3647386420794
+        },
+        "metric": "L2",
+        "status": "optimal"
+      }
+    ],
+    "weight_sensitivity": null
+  },
+  "rendered": "Criterio / Métrica\tPeso (wᵢ)\tL₁ (Manhattan)\tL₂ (Euclidiana)\tL∞ (Minimax)\nDistancia Agregada Dₚ al Ideal\tΣw = 1.00\t0.3333\t0.3333\t—\n\nZ1: Costo\n▼ Minimizar\t33%\t\n3.315.000\n100%\n\t\n3.315.000\n100%\n\t\n—\n\n\nZ2: CO2\n▼ Minimizar\t33%\t\n53.820\n0%\n\t\n53.820\n0%\n\t\n—\n\n\nZ3: Endogena\n▲ Maximizar\t33%\t\n39.000\n100%\n\t\n39.000\n100%\n\t\n—"
+}
