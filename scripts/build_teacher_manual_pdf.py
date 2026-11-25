@@ -205,7 +205,7 @@ def build_teacher_pdf(output_path: str):
     meta_rows = [
         [Paragraph("<b>Dirigido a</b>", td_bold), Paragraph("Docentes y monitores de Introducción al Análisis de Decisiones (IAD — UNAL Medellín)", td_style)],
         [Paragraph("<b>Plantilla oficial</b>", td_bold), Paragraph("<font face='DejaVuMono'>plantilla-ejercicio-iad.xlsx</font>, con un ejemplo de Producción de Papel en una hoja de consulta.", td_style)],
-        [Paragraph("<b>Acceso en la interfaz</b>", td_bold), Paragraph("<b>Formular</b> incluye <b>Obtener plantilla (.xlsx)</b> y <b>Cargar ejercicio</b>. <b>Explorar resultados</b> reúne Excel y PDF.", td_style)],
+        [Paragraph("<b>Acceso en la interfaz</b>", td_bold), Paragraph("<b>Formular</b> incluye <b>Obtener plantilla (.xlsx)</b>, <b>Cargar ejercicio</b> (<font face='DejaVuMono'>.xlsx/.csv/.json</font>), <b>Nuevo modelo</b> y <b>Guardar (.json)</b>. El pie incluye <b>Ejemplos</b>; <b>Explorar resultados</b> reúne Copiar, Excel y PDF.", td_style)],
         [Paragraph("<b>Soporte de Modelos</b>", td_bold), Paragraph("Lineales continuos (ℝ) y Enteros Mixtos MIP (ℤ, {0,1}), ≥2 o ≥3 objetivos (<font face='DejaVuMono'>maximize</font> / <font face='DejaVuMono'>minimize</font>)", td_style)],
     ]
     t_meta = Table(meta_rows, colWidths=[122, 394])
@@ -238,7 +238,7 @@ def build_teacher_pdf(output_path: str):
         [
             Paragraph("<b>Ruta 3 · Carpeta ejercicios/ y Reabrir</b>", td_bold),
             Paragraph("Distribuir los casos del semestre en Excel o calificar entregas descargadas de estudiantes.", td_style),
-            Paragraph("Usar <font face='DejaVuMono'>ejercicios/*.xlsx</font> o reabrir <font face='DejaVuMono'>.xlsx</font> de estudiantes con <b>Cargar ejercicio</b>.", td_style),
+            Paragraph("Usar el botón <b>Ejemplos</b> del pie de página, los libros <font face='DejaVuMono'>ejercicios/*.xlsx</font>, o reabrir <font face='DejaVuMono'>.xlsx/.json/.csv</font> de estudiantes con <b>Cargar ejercicio</b>.", td_style),
         ],
         [
             Paragraph("<b>Ruta 4 · Excel y PDF de resultados</b>", td_bold),
@@ -420,7 +420,7 @@ def build_teacher_pdf(output_path: str):
         "   1000*x1 + 3000*x2 &gt;= 300000</font><br/>"
         "3. Pulsa <b>Aplicar Ecuaciones y Resolver</b>. <i>Importante: mientras haya cambios sin aplicar aparece el estado <b>Borrador sin aplicar</b> y se bloquean el cambio a Ver método / Explorar resultados.</i><br/>"
         "4. Si el ejercicio tiene variables enteras (<font face='DejaVuMono'>ℤ</font>), binarias (<font face='DejaVuMono'>{0,1}</font>) o cotas diferentes de <font face='DejaVuMono'>[0, +inf)</font>, cambia a <b>Modo Tabla</b> para ajustarlas junto con el título y la descripción.<br/>"
-        "5. Conserva el Excel de resultados para reabrir el modelo desde <b>Formular</b>.",
+        "5. Pulsa <b>Guardar (.json)</b> para conservar la formulación actual, o descarga el Excel de resultados para reabrir el modelo desde <b>Formular</b>.",
         bullet_style,
     ))
     story.append(Spacer(1, 4))

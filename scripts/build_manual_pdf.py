@@ -88,60 +88,67 @@ def generate_figures():
         "grid.alpha": 0.8,
     })
 
-    # --- FIGURA 1: Esquema de OptiCompromise (TopBar + Navegación + Panel 35% + Canvas 65%) ---
-    fig, ax = plt.subplots(figsize=(10.5, 4.7), dpi=180)
-    ax.set_xlim(0, 100); ax.set_ylim(0, 54); ax.axis("off")
+    # --- FIGURA 1: Esquema de OptiCompromise (TopBar + Navegación + Panel 35% + Canvas 65% + Pie) ---
+    fig, ax = plt.subplots(figsize=(10.5, 4.9), dpi=180)
+    ax.set_xlim(0, 100); ax.set_ylim(0, 56); ax.axis("off")
 
     # Marco exterior
-    ax.add_patch(patches.FancyBboxPatch((0.5, 0.5), 99, 53, boxstyle="round,pad=0.3", facecolor="#F3F4F8", edgecolor="#CBD5E1", lw=1.2))
-    # Cabecera y accesos por sección
-    ax.add_patch(patches.Rectangle((1.2, 44.8), 97.6, 8.0, facecolor="#FFFFFF", edgecolor="#CBD5E1", lw=1))
-    ax.add_patch(patches.Rectangle((2.0, 49.2), 2.8, 2.8, facecolor="#E11D48", edgecolor="none"))
-    ax.text(5.5, 50.6, "OptiCompromise — Programación de Compromiso Multiobjetivo · UNAL", fontsize=8.4, fontweight="bold", color="#0F172A", va="center")
-    ax.text(72.0, 50.6, "[Tema claro/oscuro]", fontsize=6.7, color="#334155", va="center")
-    ax.plot([1.8, 98.2], [48.1, 48.1], color="#E2E8F0", lw=0.7)
-    ax.text(2.4, 46.4, "Formular: [Obtener plantilla .xlsx] [Cargar ejercicio] [Nuevo modelo] (carpeta ejercicios/)   ·   Pie: [Manual] [Guía docente]", fontsize=6.5, color="#475569", fontweight="bold", va="center")
+    ax.add_patch(patches.FancyBboxPatch((0.5, 0.5), 99, 55, boxstyle="round,pad=0.3", facecolor="#F3F4F8", edgecolor="#CBD5E1", lw=1.2))
+    # Cabecera superior limpia (TopBar)
+    ax.add_patch(patches.Rectangle((1.2, 49.4), 97.6, 5.2, facecolor="#FFFFFF", edgecolor="#CBD5E1", lw=1))
+    ax.add_patch(patches.Rectangle((2.0, 50.6), 2.8, 2.8, facecolor="#E11D48", edgecolor="none"))
+    ax.text(5.5, 52.0, "OptiCompromise — Programación de Compromiso Multiobjetivo · UNAL", fontsize=8.4, fontweight="bold", color="#0F172A", va="center")
+    ax.text(85.0, 52.0, "[Tema claro/oscuro]", fontsize=6.7, color="#334155", va="center")
 
     # Barra de navegación de espacio de trabajo
-    ax.add_patch(patches.Rectangle((1.2, 41.2), 97.6, 3.0, facecolor="#F8FAFC", edgecolor="#CBD5E1", lw=0.8))
-    ax.text(2.5, 42.7, "Pestañas:  [Formular]  |  [Ver método]  |  [Explorar resultados]", fontsize=7.1, fontweight="bold", color="#0F172A", va="center")
-    ax.text(65.0, 42.7, "Estado: ● Óptimo / Borrador sin aplicar", fontsize=6.9, color="#059669", fontweight="bold", va="center")
+    ax.add_patch(patches.Rectangle((1.2, 45.2), 97.6, 3.4, facecolor="#F8FAFC", edgecolor="#CBD5E1", lw=0.8))
+    ax.text(2.5, 46.9, "Pestañas:  [Formular]  |  [Ver método]  |  [Explorar resultados]", fontsize=7.1, fontweight="bold", color="#0F172A", va="center")
+    ax.text(65.0, 46.9, "Estado: ● Óptimo / Borrador sin aplicar", fontsize=6.9, color="#059669", fontweight="bold", va="center")
 
     # Panel Izquierdo (35%)
-    ax.add_patch(patches.Rectangle((1.2, 1.5), 34.0, 39.0, facecolor="#FFFFFF", edgecolor="#CBD5E1", lw=1))
-    ax.add_patch(patches.Rectangle((2.2, 36.8), 15.5, 2.6, facecolor="#E11D48"))
-    ax.text(9.95, 38.1, "Modo Tabla", fontsize=6.8, color="#FFFFFF", fontweight="bold", ha="center", va="center")
-    ax.add_patch(patches.Rectangle((18.2, 36.8), 16.0, 2.6, facecolor="#F1F5F9", edgecolor="#CBD5E1", lw=0.8))
-    ax.text(26.2, 38.1, "Modo Algebraico (Borrador)", fontsize=6.5, color="#334155", fontweight="bold", ha="center", va="center")
+    ax.add_patch(patches.Rectangle((1.2, 5.2), 34.0, 39.2, facecolor="#FFFFFF", edgecolor="#CBD5E1", lw=1))
+    ax.add_patch(patches.Rectangle((2.2, 40.7), 32.0, 2.9, facecolor="#F8FAFC", edgecolor="#CBD5E1", lw=0.8))
+    ax.text(3.0, 42.15, "[Plantilla .xlsx] [Cargar] [Nuevo] [Guardar (.json)]", fontsize=5.8, fontweight="bold", color="#334155", va="center")
+
+    ax.add_patch(patches.Rectangle((2.2, 37.3), 15.5, 2.6, facecolor="#E11D48"))
+    ax.text(9.95, 38.6, "Modo Tabla", fontsize=6.7, color="#FFFFFF", fontweight="bold", ha="center", va="center")
+    ax.add_patch(patches.Rectangle((18.2, 37.3), 16.0, 2.6, facecolor="#F1F5F9", edgecolor="#CBD5E1", lw=0.8))
+    ax.text(26.2, 38.6, "Modo Algebraico (Borrador)", fontsize=6.2, color="#334155", fontweight="bold", ha="center", va="center")
 
     blocks_left = [
-        (30.2, 5.8, "1. Variables (Nombre, Tipo ℝ/ℤ/{0,1}, Mín, Máx)"),
-        (24.0, 5.6, "2. Objetivos (Max/Min + Coeficientes)"),
-        (17.9, 5.5, "3. Restricciones (≤, ≥, = + Lado Derecho)"),
-        (12.0, 5.3, "4. Vista Previa Matemática (LaTeX / KaTeX)"),
-        (2.4, 8.8, "5. Preferencias & Pesos (Σw = 1.00)\n    Fijar peso · Edición numérica · Igualar pesos"),
+        (31.2, 5.3, "1. Variables (Nombre, Tipo ℝ/ℤ/{0,1}, Mín, Máx)"),
+        (25.3, 5.2, "2. Objetivos (Max/Min + Coeficientes)"),
+        (19.5, 5.1, "3. Restricciones (≤, ≥, = + Lado Derecho)"),
+        (13.8, 5.0, "4. Vista Previa Matemática (LaTeX / KaTeX)"),
+        (6.0, 7.1, "5. Preferencias & Pesos (Σw = 1.00)\n    Fijar peso · Edición numérica · Igualar pesos"),
     ]
     for y, h, lbl in blocks_left:
         ax.add_patch(patches.Rectangle((2.2, y), 32.0, h, facecolor="#F8FAFC", edgecolor="#E2E8F0", lw=0.8))
-        ax.text(3.0, y + h / 2, lbl, fontsize=6.3, color="#1E293B", va="center")
+        ax.text(3.0, y + h / 2, lbl, fontsize=6.1, color="#1E293B", va="center")
 
     # Canvas Derecho (65%)
-    ax.add_patch(patches.Rectangle((36.2, 1.5), 62.6, 39.0, facecolor="#FFFFFF", edgecolor="#CBD5E1", lw=1))
-    ax.add_patch(patches.Rectangle((37.2, 36.6), 60.6, 3.0, facecolor="#F8FAFC", edgecolor="#E2E8F0", lw=0.8))
-    ax.text(38.0, 38.1, "[Objetivos 2D] [Sensibilidad 21 pts] [Espacio 3D] [Radar] [Región Factible]", fontsize=6.5, fontweight="bold", color="#0F172A", va="center")
+    ax.add_patch(patches.Rectangle((36.2, 5.2), 62.6, 39.2, facecolor="#FFFFFF", edgecolor="#CBD5E1", lw=1))
+    ax.add_patch(patches.Rectangle((37.2, 40.7), 60.6, 2.9, facecolor="#F8FAFC", edgecolor="#E2E8F0", lw=0.8))
+    ax.text(38.0, 42.15, "[Objetivos 2D] [Sensibilidad 21 pts] [Espacio 3D] [Radar] [Región Factible]", fontsize=6.1, fontweight="bold", color="#0F172A", va="center")
+    ax.text(78.2, 42.15, "[Copiar] [Excel] [PDF]", fontsize=5.8, fontweight="bold", color="#E11D48", va="center")
 
-    ax.add_patch(patches.Rectangle((37.2, 20.5), 60.6, 15.4, facecolor="#F8FAFC", edgecolor="#CBD5E1", lw=0.9))
-    ax.text(67.5, 28.2, "Lienzo Interactivo Plotly (Pareto + Isodistancia + Zona Factible + Sensibilidad 3 paneles)\nIdeal ★ / Nadir ✕ / L₁ / L₂ / L∞ + Explorador de Puntos Pareto (Pesos × Métricas)", fontsize=7.0, color="#334155", ha="center", va="center")
+    ax.add_patch(patches.Rectangle((37.2, 23.6), 60.6, 16.3, facecolor="#F8FAFC", edgecolor="#CBD5E1", lw=0.9))
+    ax.text(67.5, 31.75, "Lienzo Interactivo Plotly (Pareto + Isodistancia + Zona Factible + Sensibilidad 3 paneles)\nIdeal ★ / Nadir ✕ / L₁ / L₂ / L∞ + Explorador de Puntos Pareto (Pesos × Métricas) + Descarga PNG", fontsize=6.8, color="#334155", ha="center", va="center")
 
     blocks_right = [
-        (15.6, 4.2, "Comparativa de soluciones (Zᵢ, % Logro, Distancia Dₚ)"),
-        (11.0, 4.0, "Decisiones Óptimas por Variable (Vector x* en L₁, L₂, L∞)"),
-        (6.4, 4.0, "Ver método: Matriz de Pagos (q×q), Ideal (Z*), Nadir y Normalización por rango"),
-        (2.2, 3.6, "Modo Rayos X (L∞ · λ*) + Exportación Excel y PDF, con gráficas"),
+        (18.8, 4.1, "Comparativa de soluciones (Zᵢ, % Logro, Distancia Dₚ)"),
+        (14.1, 4.0, "Decisiones Óptimas por Variable (Vector x* en L₁, L₂, L∞)"),
+        (9.5, 4.0, "Ver método: Matriz de Pagos (q×q), Ideal (Z*), Nadir y Normalización por rango"),
+        (6.0, 2.9, "Modo Rayos X (L∞ · λ*) · Tabla de logros y exportaciones"),
     ]
     for y, h, lbl in blocks_right:
         ax.add_patch(patches.Rectangle((37.2, y), 60.6, h, facecolor="#F8FAFC", edgecolor="#E2E8F0", lw=0.8))
-        ax.text(38.2, y + h / 2, lbl, fontsize=6.6, color="#1E293B", va="center")
+        ax.text(38.2, y + h / 2, lbl, fontsize=6.5, color="#1E293B", va="center")
+
+    # Pie de página (Footer)
+    ax.add_patch(patches.Rectangle((1.2, 1.3), 97.6, 3.1, facecolor="#FFFFFF", edgecolor="#CBD5E1", lw=0.9))
+    ax.text(2.4, 2.85, "Pie de página:  [Manual de usuario]  ·  [Guía docente]  ·  [Ejemplos (6 casos IAD)]", fontsize=6.4, fontweight="bold", color="#475569", va="center")
+    ax.text(63.2, 2.85, "Fabián Andrés Hurtado Arango · Oscar David Arango Garcia · IAD UNAL", fontsize=5.9, color="#64748B", va="center")
 
     plt.tight_layout(pad=0.2)
     fig.savefig(os.path.join(FIG_DIR, "arquitectura.png"), dpi=180)
@@ -459,7 +466,7 @@ def build_pdf(output_path: str):
 
     steps_rows = [
         [Paragraph("<b>Paso</b>", th_style), Paragraph("<b>Zona de la Interfaz</b>", th_style), Paragraph("<b>Acción del Usuario</b>", th_style)],
-        [Paragraph("<b>1. Cargar o Crear</b>", td_bold), Paragraph("<b>Formular</b> (Carga y Plantilla)", td_style), Paragraph("Abre cualquiera de los 6 casos del curso desde la carpeta <font face='DejaVuMono'>ejercicios/*.xlsx</font> con <b>Cargar ejercicio</b> (Celdas, Transporte, Sostenibilidad 3D, MIP, Flota y Papel), pulsa <b>Nuevo modelo</b> para empezar desde cero, o descarga <b>Obtener plantilla (.xlsx)</b> y diligencia la hoja <b>Modelo</b>.", td_style)],
+        [Paragraph("<b>1. Cargar o Crear</b>", td_bold), Paragraph("<b>Formular</b> y Pie de página", td_style), Paragraph("Abre cualquiera de los 6 casos precargados desde el botón <b>Ejemplos</b> del pie de página o mediante <b>Cargar ejercicio</b> (<font face='DejaVuMono'>.xlsx</font> de <font face='DejaVuMono'>ejercicios/</font>, <font face='DejaVuMono'>.csv</font> con coma o punto y coma, o <font face='DejaVuMono'>.json</font>). Pulsa <b>Nuevo modelo</b> para empezar desde cero, <b>Guardar (.json)</b> para descargar la formulación actual, o <b>Obtener plantilla (.xlsx)</b> para diligenciar la hoja <b>Modelo</b>.", td_style)],
         [Paragraph("<b>2. Formular Modelo</b>", td_bold), Paragraph("Pestaña <b>Formular</b> (<b>Modo Tabla</b> / <b>Modo Algebraico</b>)", td_style), Paragraph("Define variables (ℝ, ℤ, {0,1} y cotas), objetivos (Max/Min) y restricciones (≤, ≥, =). En <b>Modo Algebraico</b> escribe ecuaciones como <font face='DejaVuMono'>Max Z1 = 50*x1 + 120*x2</font>; mientras existan cambios sin aplicar, el estado marca <b>Borrador sin aplicar</b> y bloquea vistas/exportación hasta pulsar <b>Aplicar Ecuaciones y Resolver</b>. La <b>Vista Previa LaTeX</b> se actualiza en vivo.", td_style)],
         [Paragraph("<b>3. Ajustar Pesos</b>", td_bold), Paragraph("Panel <b>Preferencias</b>", td_style), Paragraph("Escribe un peso o ajusta su deslizador. Pulsa <b>Fijar peso</b> para mantenerlo al ajustar los demás. Los pesos libres se redistribuyen y conservan la suma de 1. Para <b>Igualar pesos</b>, desbloquea los pines que tengan un valor distinto al reparto equitativo.", td_style)],
         [Paragraph("<b>4. Ver Método y Explorar</b>", td_bold), Paragraph("Pestañas <b>Ver método</b> y <b>Explorar resultados</b>", td_style), Paragraph("En <b>Explorar resultados</b> analiza <b>Objetivos 2D</b> (Pareto + Isodistancia + Zona Factible), <b>Sensibilidad de pesos</b> (21 puntos entre 0 y 1, en tres paneles), <b>Espacio 3D</b>, <b>Radar (% Logro)</b> y <b>Región Factible</b> (2 variables, con malla discreta ℤ). En <b>Ver método</b> inspecciona la Matriz de Pagos, normalización y el acordeón <b>Modo Rayos X (L∞)</b>.", td_style)],

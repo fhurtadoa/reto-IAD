@@ -121,7 +121,7 @@ def draw_page(canvas, doc):
     canvas.drawRightString(PAGE[0] - MARGIN, PAGE[1] - 36, "Introducción al Análisis de Decisiones · UNAL")
     canvas.setStrokeColor(RULE)
     canvas.line(MARGIN, 35, PAGE[0] - MARGIN, 35)
-    canvas.drawString(MARGIN, 22, "Programación de compromiso multiobjetivo")
+    canvas.drawString(MARGIN, 22, "Programación de compromiso multiobjetivo · Fabián Hurtado & Oscar Arango (IAD · UNAL)")
     canvas.drawRightString(PAGE[0] - MARGIN, 22, f"Página {doc.page}")
     canvas.restoreState()
 
@@ -132,7 +132,7 @@ def build_results_pdf(
     out = BytesIO()
     document = SimpleDocTemplate(
         out, pagesize=PAGE, leftMargin=MARGIN, rightMargin=MARGIN, topMargin=56, bottomMargin=47,
-        title=model.name or "Reporte de optimización", author="OptiCompromise",
+        title=model.name or "Reporte de optimización", author="OptiCompromise · Fabián Hurtado & Oscar Arango",
     )
     story = [
         paragraph("Reporte de optimización", "subheading"),

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { ChartNoAxesCombined, FlaskConical, ListChecks } from "lucide-react";
+import { BookOpen, ChartNoAxesCombined, ChevronUp, FlaskConical, ListChecks } from "lucide-react";
 import TopBar from "../components/cockpit/TopBar";
 import SolverStatusPill from "../components/cockpit/SolverStatusPill";
 import ControlPanelLeft from "../components/cockpit/ControlPanelLeft";
@@ -19,6 +19,7 @@ import SectionHeading from "../components/cockpit/SectionHeading";
 import { changeWeight, createWeights, equalizeWeights, remapWeights, type WeightState } from "../components/cockpit/weights";
 
 type Workspace = "model" | "method" | "results";
+type ExampleSummary = { id: string; label: string; badge: string };
 const WORKSPACE_STORAGE = "opticompromise.workspace";
 
 const workspaces = [
@@ -80,6 +81,11 @@ export default function OptiCompromiseCockpitPage() {
   const [loadError, setLoadError] = useState("");
   const [reportSlot, setReportSlot] = useState<HTMLDivElement | null>(null);
   const [isLoadingExercise, setIsLoadingExercise] = useState(false);
+  const [examplesOpen, setExamplesOpen] = useState(false);
+  const [examplesList, setExamplesList] = useState<ExampleSummary[] | null>(null);
+  const [examplesBusy, setExamplesBusy] = useState(false);
+  const [examplesError, setExamplesError] = useState("");
+  const examplesMenuRef = useRef<HTMLDivElement>(null);
   const [modelKey, setModelKey] = useState<number>(0);
   const [model, setModel] = useState<ModelDefinition>(FALLBACK_CELDAS_MODEL);
   const [weightState, setWeightState] = useState(() => createWeights(FALLBACK_CELDAS_MODEL.weights ?? [0.5, 0.5]));
@@ -138,6 +144,24 @@ export default function OptiCompromiseCockpitPage() {
     presetRequestRef.current++;
     cancelPending();
   }, [cancelPending]);
+
+  useEffect(() => {
+    if (!examplesOpen) return;
+    const onMouseDown = (event: MouseEvent) => {
+      if (examplesMenuRef.current && !examplesMenuRef.current.contains(event.target as Node)) {
+        setExamplesOpen(false);
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setExamplesOpen(false);
+    };
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [examplesOpen]);
 
   // Sincronizar clase 'dark' en <html>
   useEffect(() => {
@@ -403,6 +427,82 @@ export default function OptiCompromiseCockpitPage() {
     scheduleSolve(model, next.state, 80);
   };
 
+  const handleExportModelJson = () => {
+    if (hasAlgebraicDraft) return;
+    const payload: ModelDefinition = {
+      name: model.name,
+      description: model.description || "",
+      reference: model.reference,
+      variables: model.variables,
+      objectives: model.objectives,
+      constraints: model.constraints,
+      weights,
+      pareto_seed: model.pareto_seed,
+    };
+    const slug = (model.name || "modelo")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "") || "modelo";
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `OptiCompromise_${slug}.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const handleToggleExamples = async () => {
+    if (hasAlgebraicDraft || isLoadingExercise) return;
+    const nextOpen = !examplesOpen;
+    setExamplesOpen(nextOpen);
+    if (!nextOpen || examplesList !== null || examplesBusy) return;
+    setExamplesBusy(true);
+    setExamplesError("");
+    try {
+      const res = await fetch("/api/examples");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = (await res.json()) as { exercises?: ExampleSummary[] };
+      setExamplesList(Array.isArray(data.exercises) ? data.exercises : []);
+    } catch {
+      setExamplesError("No se pudieron consultar los ejemplos del servidor.");
+    } finally {
+      setExamplesBusy(false);
+    }
+  };
+
+  const handleSelectExample = async (exampleId: string) => {
+    if (hasAlgebraicDraft || isLoadingExercise) return;
+    setExamplesOpen(false);
+    const request = ++presetRequestRef.current;
+    const revision = ++navigationRevision.current;
+    setIsLoadingExercise(true);
+    setLoadError("");
+    try {
+      const res = await fetch(`/api/examples/${encodeURIComponent(exampleId)}`);
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        throw new Error(typeof err?.detail === "string" ? err.detail : `HTTP ${res.status}`);
+      }
+      const loaded = (await res.json()) as ModelDefinition;
+      const nextW = loaded.weights && loaded.weights.length === loaded.objectives.length
+        ? loaded.weights
+        : Array(loaded.objectives.length).fill(1 / loaded.objectives.length);
+      const issue = validateModelClient(loaded, nextW);
+      if (issue) throw new Error(issue);
+      if (request !== presetRequestRef.current) return;
+      openExercise(loaded, createWeights(nextW));
+      if (revision === navigationRevision.current && workspace === "method") navigate("results");
+    } catch (err: unknown) {
+      if (request !== presetRequestRef.current) return;
+      setLoadError(`No se pudo cargar el ejemplo. ${err instanceof Error ? err.message : "Vuelve a intentarlo."}`);
+    } finally {
+      if (request === presetRequestRef.current) setIsLoadingExercise(false);
+    }
+  };
+
   const handleImportExercise = async (file: File) => {
     if (hasAlgebraicDraft) return;
     const request = ++presetRequestRef.current;
@@ -504,6 +604,7 @@ export default function OptiCompromiseCockpitPage() {
               onEqualizeWeights={() => applyWeights(equalizeWeights(weightState))}
               onWeightChange={(index, value) => applyWeights(changeWeight(weightState, index, value))}
               onImportExercise={handleImportExercise}
+              onExportModelJson={handleExportModelJson}
               onNewBlankModel={handleNewBlankModel}
               validationError={validationError}
               solverStatus={solverStatus}
@@ -530,9 +631,47 @@ export default function OptiCompromiseCockpitPage() {
           </div>
         </>}
 
-        <footer className="workspace-footer" aria-label="Ayuda">
+        <footer className="workspace-footer" aria-label="Ayuda y ejemplos">
           <a className="section-cue-link" href="/MANUAL_DE_USUARIO_Y_CASOS_DE_USO_OPTICOMPROMISE.pdf" target="_blank" rel="noopener noreferrer">Manual de usuario</a>
           <a className="section-cue-link" href="/MANUAL_DOCENTE_OPTICOMPROMISE.pdf" target="_blank" rel="noopener noreferrer">Guía docente</a>
+          <div ref={examplesMenuRef} className="footer-examples">
+            <button
+              type="button"
+              className="footer-examples-trigger"
+              aria-haspopup="menu"
+              aria-expanded={examplesOpen}
+              disabled={hasAlgebraicDraft || isLoadingExercise}
+              title={hasAlgebraicDraft ? "Aplica o descarta el borrador primero" : "Abrir uno de los casos precargados del curso"}
+              onClick={() => void handleToggleExamples()}
+            >
+              <BookOpen size={14} aria-hidden="true" />
+              <span>Ejemplos</span>
+              <ChevronUp size={13} className={`transition-transform ${examplesOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+            </button>
+            {examplesOpen && (
+              <div role="menu" aria-label="Casos precargados del curso" className="footer-examples-popover">
+                <p className="footer-examples-heading">Casos precargados de IAD</p>
+                {examplesBusy && <p className="footer-examples-note">Cargando ejemplos…</p>}
+                {examplesError && <p role="alert" className="footer-examples-note text-rose-800 dark:text-rose-300">{examplesError}</p>}
+                {!examplesBusy && !examplesError && examplesList && examplesList.length === 0 && (
+                  <p className="footer-examples-note">No hay ejemplos disponibles.</p>
+                )}
+                {!examplesBusy && examplesList && examplesList.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    role="menuitem"
+                    className="footer-examples-item"
+                    onClick={() => void handleSelectExample(item.id)}
+                  >
+                    <span className="footer-examples-label">{item.label}</span>
+                    <span className="footer-examples-badge">{item.badge}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <span className="footer-authors">Fabián Andrés Hurtado Arango · Oscar David Arango Garcia · IAD UNAL</span>
         </footer>
       </div>
     </div>

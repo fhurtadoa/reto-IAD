@@ -179,3 +179,87 @@ test("importador rechaza pesos inconsistentes, columnas ambiguas o archivos corr
     /columna de coeficientes inequívoca/
   );
 });
+
+test("CSV con punto y coma (;), fórmulas sin caché en Excel y validación estricta de JSON", async () => {
+  const semicolonCsv = [
+    "Seccion;Nombre;Tipo_o_Sentido;Min_o_RHS;Max_o_Peso;x1;x2",
+    'Meta;"Modelo; Español";Desc;;Ref UNAL',
+    "Variable;x1;continua;0;100",
+    "Variable;x2;entera;1;20",
+    "Objetivo;Z1;max;;0,4;10,5;20",
+    "Objetivo;Z2;min;;0,6;1;2,5",
+    "Restriccion;Balance;=;12,5;;1;1",
+  ].join("\r\n");
+  const fromSemi = await importModelFromFile(fileFromBuffer(Buffer.from(semicolonCsv, "utf8"), "espanol.csv"));
+  assert.equal(fromSemi.model.name, "Modelo; Español");
+  assert.deepEqual(fromSemi.model.objectives.map((o) => [o.sense, o.coefficients]), [
+    ["maximize", [10.5, 20]],
+    ["minimize", [1, 2.5]],
+  ]);
+  assert.equal(fromSemi.model.constraints[0].sense, "==");
+  assert.equal(fromSemi.model.constraints[0].rhs, 12.5);
+  assert.deepEqual(fromSemi.weights, [0.4, 0.6]);
+
+  const wsUncached = xlsx.utils.aoa_to_sheet([
+    ["Seccion", "Nombre", "Tipo_o_Sentido", "Min_o_RHS", "Max_o_Peso", "x1", "x2"],
+    ["Variable", "x1", "continuous", 0, 10],
+    ["Variable", "x2", "continuous", 0, 10],
+    ["Objetivo", "Z1", "maximize", "", 0.5, 2, 3],
+    ["Objetivo", "Z2", "minimize", "", 0.5, 1, 1],
+    ["Restriccion", "R1", "<=", 5, "", { t: "n", f: "1/53" }, 1],
+  ]);
+  const wbUncached = xlsx.utils.book_new();
+  xlsx.utils.book_append_sheet(wbUncached, wsUncached, "Modelo");
+  await assert.rejects(
+    () => importModelFromFile(fileFromBuffer(xlsx.write(wbUncached, { type: "buffer", bookType: "xlsx" }), "uncached.xlsx")),
+    /fórmula sin valor calculado/
+  );
+
+  const wsCached = xlsx.utils.aoa_to_sheet([
+    ["Seccion", "Nombre", "Tipo_o_Sentido", "Min_o_RHS", "Max_o_Peso", "x1", "x2"],
+    ["Variable", "x1", "continuous", 0, 10],
+    ["Variable", "x2", "continuous", 0, 10],
+    ["Objetivo", "Z1", "maximize", "", 0.5, 2, 3],
+    ["Objetivo", "Z2", "minimize", "", 0.5, 1, 1],
+    ["Restriccion", "R1", "<=", 5, "", { t: "n", f: "1/2", v: 0.5 }, 1],
+  ]);
+  const wbCached = xlsx.utils.book_new();
+  xlsx.utils.book_append_sheet(wbCached, wsCached, "Modelo");
+  const parsedCached = await importModelFromFile(
+    fileFromBuffer(xlsx.write(wbCached, { type: "buffer", bookType: "xlsx" }), "cached.xlsx")
+  );
+  assert.equal(parsedCached.model.constraints[0].coefficients[0], 0.5);
+
+  const aliasJson = JSON.stringify({
+    name: "JSON con alias",
+    variables: [{ name: "x1", var_type: "entera", lower_bound: 0, upper_bound: 10 }],
+    objectives: [
+      { name: "Z1", sense: "min", coefficients: [2] },
+      { name: "Z2", sense: "max", coefficients: [3] },
+    ],
+    constraints: [{ name: "C1", sense: "=", coefficients: [1], rhs: 4 }],
+    weights: [0.3, 0.7],
+  });
+  const parsedAlias = await importModelFromFile(fileFromBuffer(Buffer.from(aliasJson, "utf8"), "alias.json"));
+  assert.equal(parsedAlias.model.variables[0].var_type, "integer");
+  assert.equal(parsedAlias.model.objectives[0].sense, "minimize");
+  assert.equal(parsedAlias.model.objectives[1].sense, "maximize");
+  assert.equal(parsedAlias.model.constraints[0].sense, "==");
+  assert.deepEqual(parsedAlias.weights, [0.3, 0.7]);
+
+  await assert.rejects(
+    () => importModelFromFile(fileFromBuffer(Buffer.from(JSON.stringify({
+      variables: [{ name: "x1", var_type: "raro" }],
+      objectives: [{ name: "Z1", sense: "max", coefficients: [1] }, { name: "Z2", sense: "min", coefficients: [1] }],
+    })), "bad_vt.json")),
+    /Tipo de variable desconocido/
+  );
+  await assert.rejects(
+    () => importModelFromFile(fileFromBuffer(Buffer.from(JSON.stringify({
+      variables: [{ name: "x1" }],
+      objectives: [{ name: "Z1", sense: "max", coefficients: [1] }, { name: "Z2", sense: "min", coefficients: [1] }],
+      weights: [0.2, 0.3, 0.5],
+    })), "bad_w.json")),
+    /exactamente 2 valores/
+  );
+});

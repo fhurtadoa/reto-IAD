@@ -2,7 +2,7 @@
 
 ## Formular un modelo
 
-1. Al abrir la aplicación se carga el caso base de *Celdas Fotovoltaicas*. Para abrir cualquiera de los 6 casos del curso, entra en **Formular**, pulsa **Cargar ejercicio** y selecciona un libro `.xlsx` de la carpeta [`ejercicios/`](../ejercicios/). Para empezar desde cero, pulsa **Nuevo modelo**; para armar tu propio archivo, pulsa **Obtener plantilla (.xlsx)**, diligencia la hoja **Modelo** y ábrelo con **Cargar ejercicio**. Consulta la [guía docente](guia-docente-ejercicios.md) para ver los campos admitidos.
+1. Al abrir la aplicación se carga el caso base de *Celdas Fotovoltaicas*. Para abrir cualquiera de los 6 casos del curso directamente en la web, usa el botón **Ejemplos** del pie de página o entra en **Formular**, pulsa **Cargar ejercicio** y selecciona un libro `.xlsx` de la carpeta [`ejercicios/`](../ejercicios/) (también admite `.csv` separados por coma o punto y coma y `.json`). Para empezar desde cero, pulsa **Nuevo modelo**; para guardar tu formulación actual en cualquier momento, pulsa **Guardar (.json)**; para armar tu propio libro Excel, pulsa **Obtener plantilla (.xlsx)**, diligencia la hoja **Modelo** y ábrelo con **Cargar ejercicio**. Consulta la [guía docente](guia-docente-ejercicios.md) para ver los campos admitidos.
 2. En **Formular**, define las variables (tipo continua ℝ, entera ℤ o binaria {0,1} y cotas), agrega dos o más objetivos (Max/Min) y registra las restricciones con `≤`, `≥` o `=`.
 3. Puedes editar coeficientes en **Modo Tabla** o escribir ecuaciones directamente en **Modo Algebraico**. **Resolver**, **Aplicar Ecuaciones y Resolver** y el cambio a otra vista aplican el borrador si las ecuaciones son válidas. Si hay errores, el texto se conserva y se indica qué corregir. Si las cotas son incompatibles, vuelve a **Modo Tabla** para corregirlas con el borrador pendiente y luego aplica las ecuaciones. El nombre, la descripción y la fuente se desbloquean al aplicar o descartar el borrador. Puedes usar **Descartar borrador** para recuperar el texto del modelo aplicado. Cada ecuación determina las variables presentes. **Modo Tabla** permite editar tipos y cotas.
 4. Si el modelo es infactible, revisa qué restricciones y cotas son incompatibles. Si está no acotado, revisa qué objetivo puede mejorar indefinidamente. Cuando una edición invalida un ejercicio que ya resolviste, usa **Restaurar último modelo válido** para recuperar su formulación y pesos.
@@ -23,7 +23,7 @@
 - **PDF (.pdf)** presenta la identificación, la formulación matemática, las tablas de resultados y las gráficas con sus leyendas.
 - Ambos incluyen la proyección 2D con Pareto e isodistancias cuando aplican, la región de decisiones si hay dos variables, la sensibilidad si hay dos objetivos, y las vistas 3D y radar a partir de tres objetivos. Las gráficas se incluyen aunque no hayas abierto sus pestañas. La aplicación y el informe identifican las imágenes que no se pudieron generar.
 
-Al recargar, el navegador conserva la última sección activa. Los manuales están en el pie de página. Si un archivo o ejemplo falla al cargar, la alerta conserva el modelo y la sección abiertos.
+Al recargar, el navegador conserva la última sección activa. En el pie de página están los manuales, el selector **Ejemplos** con los casos precargados del curso y la autoría del proyecto. Si un archivo o ejemplo falla al cargar, la alerta conserva el modelo y la sección abiertos.
 
 | Concepto | Lectura |
 |---|---|

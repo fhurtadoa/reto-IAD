@@ -1032,12 +1032,31 @@ function parseBoundCell(raw: unknown, fallback: number | null, field: string): n
   return tabularNumber(value, field);
 }
 
+function detectCsvDelimiter(clean: string): string {
+  const firstLine = clean.split(/\r?\n/).find((line) => line.trim().length > 0) ?? "";
+  let commas = 0;
+  let semicolons = 0;
+  let inQuotes = false;
+  for (let i = 0; i < firstLine.length; i++) {
+    const ch = firstLine[i];
+    if (ch === '"') {
+      if (inQuotes && firstLine[i + 1] === '"') i++;
+      else inQuotes = !inQuotes;
+    } else if (!inQuotes) {
+      if (ch === ",") commas++;
+      else if (ch === ";") semicolons++;
+    }
+  }
+  return semicolons > commas ? ";" : ",";
+}
+
 function parseCsvRows(text: string): Array<Array<string>> {
   const rows: Array<Array<string>> = [];
   let row: string[] = [];
   let field = "";
   let inQuotes = false;
   const clean = text.replace(/^\uFEFF/, "");
+  const delimiter = detectCsvDelimiter(clean);
 
   for (let i = 0; i < clean.length; i++) {
     const ch = clean[i];
@@ -1056,7 +1075,7 @@ function parseCsvRows(text: string): Array<Array<string>> {
     }
     if (ch === '"') {
       inQuotes = true;
-    } else if (ch === ",") {
+    } else if (ch === delimiter) {
       row.push(field);
       field = "";
     } else if (ch === "\r" || ch === "\n") {
@@ -1254,7 +1273,19 @@ function parseJsonModel(rawText: string, fileName: string): { model: ModelDefini
     const v = item as Record<string, unknown>;
     const name = String(v.name ?? "").trim();
     if (!name) throw new Error(`Escribe el nombre de la variable #${idx + 1}.`);
-    const var_type = (v.var_type === "integer" || v.var_type === "binary" ? v.var_type : "continuous") as ModelDefinition["variables"][number]["var_type"];
+    const vtRaw = v.var_type === undefined || v.var_type === null || v.var_type === ""
+      ? "continuous"
+      : String(v.var_type).trim().toLowerCase();
+    if (!["continuous", "continua", "integer", "entera", "binary", "binaria"].includes(vtRaw)) {
+      throw new Error(`Tipo de variable desconocido en «${name}». Usa continuous, integer o binary.`);
+    }
+    const var_type = (
+      vtRaw.startsWith("int") || vtRaw.startsWith("ent")
+        ? "integer"
+        : vtRaw.startsWith("bin")
+        ? "binary"
+        : "continuous"
+    ) as ModelDefinition["variables"][number]["var_type"];
     const rawLb = v.lower_bound === undefined ? 0 : v.lower_bound;
     const rawUb = v.upper_bound === undefined ? null : v.upper_bound;
     const lb = var_type === "binary" ? 0 : rawLb === null ? null : tabularNumber(rawLb, `cota inferior de «${name}»`);
@@ -1268,7 +1299,13 @@ function parseJsonModel(rawText: string, fileName: string): { model: ModelDefini
     const o = item as Record<string, unknown>;
     const name = String(o.name ?? `Objetivo ${idx + 1}`).trim();
     if (!name) throw new Error(`Escribe el nombre del objetivo #${idx + 1}.`);
-    const sense = o.sense === "minimize" ? "minimize" : "maximize";
+    const sRaw = o.sense === undefined || o.sense === null || o.sense === ""
+      ? "maximize"
+      : String(o.sense).trim().toLowerCase();
+    if (!["minimize", "minimizar", "min", "maximize", "maximizar", "max"].includes(sRaw)) {
+      throw new Error(`Indica minimize o maximize en el objetivo «${name}».`);
+    }
+    const sense = sRaw.startsWith("min") ? "minimize" : "maximize";
     const coeffsRaw = Array.isArray(o.coefficients) ? o.coefficients : [];
     const coefficients = Array.from({ length: nVars }, (_, j) => tabularNumber(coeffsRaw[j] ?? 0, `«${name}», variable #${j + 1}`, 0));
     return { name, sense, coefficients };
@@ -1279,7 +1316,13 @@ function parseJsonModel(rawText: string, fileName: string): { model: ModelDefini
     if (!item || typeof item !== "object") throw new Error(`Restricción #${idx + 1} inválida en el JSON.`);
     const c = item as Record<string, unknown>;
     const name = String(c.name ?? `Restricción ${idx + 1}`).trim() || `Restricción ${idx + 1}`;
-    const sense = c.sense === ">=" || c.sense === "==" ? c.sense : "<=";
+    const sRaw = c.sense === undefined || c.sense === null || c.sense === ""
+      ? "<="
+      : String(c.sense).trim();
+    if (!["<=", "≤", ">=", "≥", "==", "="].includes(sRaw)) {
+      throw new Error(`Usa <=, >= o = en la restricción «${name}».`);
+    }
+    const sense = sRaw === ">=" || sRaw === "≥" ? ">=" : sRaw === "==" || sRaw === "=" ? "==" : "<=";
     const rhs = tabularNumber(c.rhs, `lado derecho de «${name}»`);
     const coeffsRaw = Array.isArray(c.coefficients) ? c.coefficients : [];
     const coefficients = Array.from({ length: nVars }, (_, j) => tabularNumber(coeffsRaw[j] ?? 0, `«${name}», variable #${j + 1}`, 0));
@@ -1287,13 +1330,24 @@ function parseJsonModel(rawText: string, fileName: string): { model: ModelDefini
   });
 
   let normWeights: number[];
-  if (Array.isArray(obj.weights) && obj.weights.length === objectives.length) {
+  if (obj.weights !== undefined && obj.weights !== null) {
+    if (!Array.isArray(obj.weights) || obj.weights.length !== objectives.length) {
+      throw new Error(`Los pesos en el JSON deben incluir exactamente ${objectives.length} valores (uno por objetivo).`);
+    }
     normWeights = obj.weights.map((w, i) => tabularNumber(w, `peso de «${objectives[i].name}»`));
     if (normWeights.some(w => w < 0 || w > 1) || Math.abs(normWeights.reduce((a, b) => a + b, 0) - 1) > 0.001 + 1e-12) {
       throw new Error("Los pesos deben estar entre 0 y 1 y sumar 1.");
     }
   } else {
     normWeights = Array<number>(objectives.length).fill(1 / objectives.length);
+  }
+
+  let paretoSeed: number | undefined;
+  if (obj.pareto_seed !== undefined && obj.pareto_seed !== null) {
+    if (typeof obj.pareto_seed !== "number" || !Number.isInteger(obj.pareto_seed) || obj.pareto_seed < 0 || obj.pareto_seed > 4294967295) {
+      throw new Error("La semilla de Pareto debe ser un entero entre 0 y 4294967295.");
+    }
+    paretoSeed = obj.pareto_seed;
   }
 
   return {
@@ -1305,7 +1359,7 @@ function parseJsonModel(rawText: string, fileName: string): { model: ModelDefini
       objectives,
       constraints,
       weights: normWeights,
-      pareto_seed: typeof obj.pareto_seed === "number" && Number.isInteger(obj.pareto_seed) ? obj.pareto_seed : undefined,
+      pareto_seed: paretoSeed,
     },
     weights: normWeights,
   };
@@ -1340,6 +1394,15 @@ export async function importModelFromFile(file: File): Promise<{ model: ModelDef
   if (!sheetName) throw new Error("Falta la hoja «Modelo». Usa la plantilla oficial de OptiCompromise.");
 
   const sheet = wb.Sheets[sheetName];
+  for (const [cellRef, cell] of Object.entries(sheet)) {
+    if (cellRef.startsWith("!") || !cell || typeof cell !== "object") continue;
+    const cellObj = cell as { f?: unknown; v?: unknown };
+    if (typeof cellObj.f === "string" && cellObj.v === undefined) {
+      throw new Error(
+        `La hoja «Modelo» contiene una fórmula sin valor calculado (${cellRef}). Abre y guarda el archivo en Excel o escribe el valor numérico.`
+      );
+    }
+  }
   const matrixRows = XLSX.utils.sheet_to_json<Array<string | number | boolean | null>>(sheet, {
     header: 1,
     defval: "",

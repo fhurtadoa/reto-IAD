@@ -7,6 +7,7 @@ import {
   Plus,
   Trash2,
   Upload,
+  Download,
   FilePlus2,
   Play,
   AlertCircle,
@@ -188,6 +189,7 @@ interface ControlPanelLeftProps {
   onEqualizeWeights: () => void;
   onWeightChange: (index: number, value: number) => void;
   onImportExercise: (file: File) => void;
+  onExportModelJson: () => void;
   onNewBlankModel: () => void;
   validationError: string | null;
   solverStatus: SolverStatus;
@@ -212,6 +214,7 @@ export default function ControlPanelLeft({
   onEqualizeWeights,
   onWeightChange,
   onImportExercise,
+  onExportModelJson,
   onNewBlankModel,
   validationError,
   solverStatus,
@@ -428,7 +431,12 @@ export default function ControlPanelLeft({
           onClick={onNewBlankModel}>
           <FilePlus2 size={15} aria-hidden="true" /> Nuevo modelo
         </button>
-        <p>Admite libros Excel (.xlsx) de la carpeta ejercicios/ o la plantilla oficial, además de .csv y .json.</p>
+        <button type="button" className="workspace-button" disabled={algebraicDirty || isLoadingExercise}
+          title={algebraicDirty ? "Aplica o descarta el borrador primero" : "Guardar la formulación actual como archivo .json"}
+          onClick={onExportModelJson}>
+          <Download size={15} aria-hidden="true" /> Guardar (.json)
+        </button>
+        <p>Admite libros Excel (.xlsx), .csv (coma o punto y coma) y .json; también puedes guardar tu modelo en .json.</p>
       </section>
       {weightError && <p role="alert" className="workspace-feedback text-rose-800 dark:text-rose-300">{weightError}</p>}
       {/* Encabezado del Modelo */}

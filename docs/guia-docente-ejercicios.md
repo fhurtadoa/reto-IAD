@@ -22,7 +22,7 @@ Esta guía práctica está pensada para **docentes y monitores** que desean prep
 
 1. En **Formular**, pulsa **Obtener plantilla (.xlsx)**. [Plantilla oficial de OptiCompromise](../web/public/plantilla-ejercicio-iad.xlsx).
 2. Diligencia **Modelo**. Usa **Guia_Docente** para consultar los campos y **Ejemplo_Papel** para ver un caso diligenciado.
-3. Guarda el `.xlsx` y pulsa **Cargar ejercicio**. OptiCompromise lee exclusivamente la hoja **Modelo**. Revisa el estado del motor y la formulación que se reconstruyó.
+3. Guarda el `.xlsx` (o exporta a `.csv` con `,` o `;`) y pulsa **Cargar ejercicio**. OptiCompromise lee exclusivamente la hoja **Modelo** (sin fórmulas sin valor calculado). Revisa el estado del motor y la formulación que se reconstruyó. También puedes usar **Guardar (.json)** en **Formular** para conservar una copia editable del modelo en formato JSON, o abrir los 6 casos precargados desde **Ejemplos** en el pie de página.
 
 ### Estructura exacta de columnas
 
